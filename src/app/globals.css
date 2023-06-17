@@ -1,0 +1,290 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 214, 219, 220;
+  --background-end-rgb: 255, 255, 255;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --foreground-rgb: 255, 255, 255;
+    --background-start-rgb: 0, 0, 0;
+    --background-end-rgb: 0, 0, 0;
+  }
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: linear-gradient(to bottom, transparent, rgb(var(--background-end-rgb)))
+    rgb(var(--background-start-rgb));
+}
+
+@layer grid {
+  .grid-1 {
+    @apply grid grid-cols-1;
+  }
+  .grid-2 {
+    @apply grid grid-cols-2;
+  }
+  .grid-3 {
+    @apply grid grid-cols-3;
+  }
+  .grid-4 {
+    @apply grid grid-cols-4;
+  }
+  .grid-5 {
+    @apply grid grid-cols-5;
+  }
+  .grid-6 {
+    @apply grid grid-cols-6;
+  }
+  .grid-7 {
+    @apply grid grid-cols-7;
+  }
+  .grid-8 {
+    @apply grid grid-cols-8;
+  }
+  .grid-9 {
+    @apply grid grid-cols-9;
+  }
+  .grid-10 {
+    @apply grid grid-cols-10;
+  }
+  .grid-11 {
+    @apply grid grid-cols-11;
+  }
+  .grid-12 {
+    @apply grid grid-cols-12;
+  }
+
+  /* sm */
+  .xs-1 {
+    @apply col-span-1;
+  }
+  .xs-2 {
+    @apply col-span-2;
+  }
+  .xs-3 {
+    @apply col-span-3;
+  }
+  .xs-4 {
+    @apply col-span-4;
+  }
+  .xs-5 {
+    @apply col-span-5;
+  }
+  .xs-6 {
+    @apply col-span-6;
+  }
+  .xs-7 {
+    @apply col-span-7;
+  }
+  .xs-8 {
+    @apply col-span-8;
+  }
+  .xs-9 {
+    @apply col-span-9;
+  }
+  .xs-10 {
+    @apply col-span-10;
+  }
+  .xs-11 {
+    @apply col-span-11;
+  }
+  .xs-12 {
+    @apply col-span-12;
+  }
+
+  /* sm */
+  .sm-1 {
+    @apply sm:col-span-1;
+  }
+  .sm-2 {
+    @apply sm:col-span-2;
+  }
+  .sm-3 {
+    @apply sm:col-span-3;
+  }
+  .sm-4 {
+    @apply sm:col-span-4;
+  }
+  .sm-5 {
+    @apply sm:col-span-5;
+  }
+  .sm-6 {
+    @apply sm:col-span-6;
+  }
+  .sm-7 {
+    @apply sm:col-span-7;
+  }
+  .sm-8 {
+    @apply sm:col-span-8;
+  }
+  .sm-9 {
+    @apply sm:col-span-9;
+  }
+  .sm-10 {
+    @apply sm:col-span-10;
+  }
+  .sm-11 {
+    @apply sm:col-span-11;
+  }
+  .sm-12 {
+    @apply sm:col-span-12;
+  }
+
+  /* md */
+  .md-1 {
+    @apply md:col-span-1;
+  }
+  .md-2 {
+    @apply md:col-span-2;
+  }
+  .md-3 {
+    @apply md:col-span-3;
+  }
+  .md-4 {
+    @apply md:col-span-4;
+  }
+  .md-5 {
+    @apply md:col-span-5;
+  }
+  .md-6 {
+    @apply md:col-span-6;
+  }
+  .md-7 {
+    @apply md:col-span-7;
+  }
+  .md-8 {
+    @apply md:col-span-8;
+  }
+  .md-9 {
+    @apply md:col-span-9;
+  }
+  .md-10 {
+    @apply md:col-span-10;
+  }
+  .md-11 {
+    @apply md:col-span-11;
+  }
+  .md-12 {
+    @apply md:col-span-12;
+  }
+
+  /* lg */
+  .lg-1 {
+    @apply lg:col-span-1;
+  }
+  .lg-2 {
+    @apply lg:col-span-2;
+  }
+  .lg-3 {
+    @apply lg:col-span-3;
+  }
+  .lg-4 {
+    @apply lg:col-span-4;
+  }
+  .lg-5 {
+    @apply lg:col-span-5;
+  }
+  .lg-6 {
+    @apply lg:col-span-6;
+  }
+  .lg-7 {
+    @apply lg:col-span-7;
+  }
+  .lg-8 {
+    @apply lg:col-span-8;
+  }
+  .lg-9 {
+    @apply lg:col-span-9;
+  }
+  .lg-10 {
+    @apply lg:col-span-10;
+  }
+  .lg-11 {
+    @apply lg:col-span-11;
+  }
+  .lg-12 {
+    @apply lg:col-span-12;
+  }
+
+  /* xl */
+  .xl-1 {
+    @apply xl:col-span-1;
+  }
+  .xl-2 {
+    @apply xl:col-span-2;
+  }
+  .xl-3 {
+    @apply xl:col-span-3;
+  }
+  .xl-4 {
+    @apply xl:col-span-4;
+  }
+  .xl-5 {
+    @apply xl:col-span-5;
+  }
+  .xl-6 {
+    @apply xl:col-span-6;
+  }
+  .xl-7 {
+    @apply xl:col-span-7;
+  }
+  .xl-8 {
+    @apply xl:col-span-8;
+  }
+  .xl-9 {
+    @apply xl:col-span-9;
+  }
+  .xl-10 {
+    @apply xl:col-span-10;
+  }
+  .xl-11 {
+    @apply xl:col-span-11;
+  }
+  .xl-12 {
+    @apply xl:col-span-12;
+  }
+
+  /* 2xl */
+  .2xl-1 {
+    @apply 2xl:col-span-1;
+  }
+  .2xl-2 {
+    @apply 2xl:col-span-2;
+  }
+  .2xl-3 {
+    @apply 2xl:col-span-3;
+  }
+  .2xl-4 {
+    @apply 2xl:col-span-4;
+  }
+  .2xl-5 {
+    @apply 2xl:col-span-5;
+  }
+  .2xl-6 {
+    @apply 2xl:col-span-6;
+  }
+  .2xl-7 {
+    @apply 2xl:col-span-7;
+  }
+  .2xl-8 {
+    @apply 2xl:col-span-8;
+  }
+  .2xl-9 {
+    @apply 2xl:col-span-9;
+  }
+  .2xl-10 {
+    @apply 2xl:col-span-10;
+  }
+  .2xl-11 {
+    @apply 2xl:col-span-11;
+  }
+  .2xl-12 {
+    @apply 2xl:col-span-12;
+  }
+}
