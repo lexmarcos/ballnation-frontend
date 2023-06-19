@@ -7,10 +7,24 @@ import logo from "../../../public/assets/logo.svg";
 import { useState } from "react";
 import Input from "@/components/Input";
 import Link from "next/link";
+import { api } from "@/services/api/api";
+import { useRouter } from "next/navigation";
+
 export default function Signup() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
+  const router = useRouter();
+
+  const signup = async () => {
+    const res = await api.auth.signup(email, username, password);
+    console.log(res.status);
+    if (res.status === 200) {
+      router.push("/login");
+    }
+    return res;
+  };
+
   return (
     <div className="grid-12">
       <div
@@ -27,34 +41,32 @@ export default function Signup() {
             Entre aqui!
           </Link>
         </h5>
-        <form action="">
-          <Input
-            className="mt-6"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            label="Email"
-            type="email"
-            required
-          ></Input>
-          <Input
-            className="mt-3"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            label="Usuário"
-            type="text"
-            required
-          ></Input>
-          <Input
-            className="mt-3"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            label="Senha"
-            type="password"
-            required
-          ></Input>
-        </form>
+        <Input
+          className="mt-6"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          label="Email"
+          type="email"
+          required
+        ></Input>
+        <Input
+          className="mt-3"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          label="Usuário"
+          type="text"
+          required
+        ></Input>
+        <Input
+          className="mt-3"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          label="Senha"
+          type="password"
+          required
+        ></Input>
         <button
-          type="submit"
+          onClick={signup}
           className="bg-main-color uppercase tracking-widest text-white font-bold text-sm rounded-md p-2 mt-3 w-full"
         >
           Criar conta

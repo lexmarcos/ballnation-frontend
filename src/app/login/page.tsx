@@ -7,9 +7,27 @@ import logo from "../../../public/assets/logo.svg";
 import { useState } from "react";
 import Input from "@/components/Input";
 import Link from "next/link";
+import { api } from "@/services/api/api";
+import { useAuth } from "@/contexts/AuthContext";
+import { useRouter } from "next/navigation";
 export default function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const { saveUsername, saveToken } = useAuth();
+  const router = useRouter();
+  const login = async () => {
+    setLoading(true);
+    const response = await api.auth.login(username, password);
+    if (response.status === 200) {
+      const data = await response.json();
+      saveUsername(username);
+      saveToken(data.token);
+      router.push("/");
+    }
+  };
+
   return (
     <div className="grid-12">
       <div
@@ -40,7 +58,10 @@ export default function Login() {
           label="Senha"
           type="password"
         ></Input>
-        <button className="bg-main-color uppercase tracking-widest text-white font-bold text-sm rounded-md p-2 mt-3 w-full">
+        <button
+          onClick={login}
+          className="bg-main-color uppercase tracking-widest text-white font-bold text-sm rounded-md p-2 mt-3 w-full"
+        >
           login
         </button>
       </div>
