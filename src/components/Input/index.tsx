@@ -9,6 +9,7 @@ interface InputProps {
   className?: string;
   error?: string;
   required?: boolean;
+  color?: string;
 }
 
 const Input = ({
@@ -20,13 +21,15 @@ const Input = ({
   className,
   error,
   required,
+  color,
 }: InputProps) => {
   return (
     <div className={className}>
       <label
         className={classNames([
-          "text-main-color-dark font-bold text-sm",
+          "font-bold text-sm",
           error ? "text-red-500" : "text-black",
+          color ? `text-${color}` : "text-main-color-dark",
         ])}
       >
         {label}
@@ -34,7 +37,9 @@ const Input = ({
       <input
         required={required}
         className={classNames([
-          "border border-gray-300 focus-visible:outline-main-color rounded-md p-2 mt-1 w-full text-black ",
+          "border border-gray-300 rounded-md p-2 mt-1 w-full text-black ",
+          color ? `focus-visible:outline-${color}` : "focus-visible:outline-main-color",
+          error ? "border-red-500" : "border-gray-300",
         ])}
         type={type}
         placeholder={placeholder}
