@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import io, { Socket } from "socket.io-client";
 import { stringToColor } from "@/utils/generateHexColor";
 import { useAuth } from "@/contexts/AuthContext";
+import { IoSend } from "react-icons/io5";
 
 interface IMessage {
   author: string;
@@ -54,8 +55,11 @@ const Chat = () => {
     <div className={classNames(["bg-dark-purple rounded-xl", styles.chat])}>
       <div className={classNames(["px-7 pt-4", styles.chatMessages])}>
         {messages.map((message) => (
-          <div className="my-1" key={message.id}>
-            <span style={{ color: stringToColor(message.author) }} className="font-bold">
+          <div className="my-1 text-white" key={message.id}>
+            <span
+              style={{ color: stringToColor(message.author) }}
+              className="font-bold"
+            >
               {message.author}
             </span>
             : {message.text}
@@ -65,14 +69,15 @@ const Chat = () => {
       <div className="m-6 flex align-middle">
         <input
           value={message}
-          className="w-full bg-darkest-purple p-4 rounded-full outline-none"
+          className="w-full text-white bg-darkest-purple p-4 rounded-full outline-none"
           onChange={(e) => setMessage(e.target.value)}
+          placeholder="Digite uma mensagem..."
         />
         <button
           onClick={() => onSendMessage()}
           className="bg-purple-600 py-2 px-7 -ml-12 rounded-full"
         >
-          Enviar
+          <IoSend color="white"></IoSend>
         </button>
       </div>
     </div>
