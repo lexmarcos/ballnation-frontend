@@ -4,3 +4,8 @@
   display: flex;
   flex-direction: column;
 }
+
+.side-art {
+  width: 35vw;
+  position: relative;
+}
