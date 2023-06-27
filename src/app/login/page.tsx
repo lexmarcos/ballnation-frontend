@@ -4,6 +4,7 @@ import classNames from "classnames";
 import styles from "./styles.module.css";
 import Image from "next/legacy/image";
 import logo from "../../../public/assets/logo.svg";
+import goalkeeper from "../../../public/assets/goalkeeper.svg";
 import { useState } from "react";
 import Input from "@/components/Input";
 import Link from "next/link";
@@ -64,6 +65,11 @@ export default function Login() {
         >
           login
         </button>
+      </div>
+      <div className="bg-secondary-green-color xl-9 xs-0 sm-6 md-7 lg-8 2xl-10 flex justify-center align-middle">
+        <div className={classNames([styles["side-art"]])}>
+          <Image layout="fill" src={goalkeeper} alt="Logo" />
+        </div>
       </div>
     </div>
   );
