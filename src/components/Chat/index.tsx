@@ -6,6 +6,7 @@ import io, { Socket } from "socket.io-client";
 import { stringToColor } from "@/utils/generateHexColor";
 import { useAuth } from "@/contexts/AuthContext";
 import { IoSend } from "react-icons/io5";
+import { useSocket } from "@/contexts/SocketContext";
 
 interface IMessage {
   author: string;
@@ -16,31 +17,17 @@ interface IMessage {
 const Chat = () => {
   const { username, token } = useAuth();
   const [messages, setMessages] = useState<IMessage[]>([]);
+  const socket = useSocket();
   const [message, setMessage] = useState("");
-  const [socket, setSocket] = useState<Socket | null>(null);
 
   useEffect(() => {
-    const socketConnect = io("http://localhost:9000", {
-      query: {
-        token,
-      },
-    });
-    socketConnect.emit("joinRoom", { room: "lobby" });
-    setSocket(socketConnect);
+    socket?.emit("joinLobby", { room: "lobby" });
 
-    socketConnect.on("newMessage", (newMessage: IMessage) => {
+    socket?.on("newMessage", (newMessage: IMessage) => {
       console.log(newMessage);
       setMessages((currentMessages) => [...currentMessages, newMessage]);
     });
-
-    socketConnect.on("connect_error", (error) => {
-      console.log(error.message); // vai imprimir "Authentication error" se o JWT for inválido
-    });
-
-    return () => {
-      socketConnect.disconnect();
-    };
-  }, [token]);
+  }, [socket]);
 
   const onSendMessage = () => {
     setMessage("");
@@ -56,10 +43,7 @@ const Chat = () => {
       <div className={classNames(["px-7 pt-4", styles.chatMessages])}>
         {messages.map((message) => (
           <div className="my-1 text-white" key={message.id}>
-            <span
-              style={{ color: stringToColor(message.author) }}
-              className="font-bold"
-            >
+            <span style={{ color: stringToColor(message.author) }} className="font-bold">
               {message.author}
             </span>
             : {message.text}

@@ -7,6 +7,7 @@ import { stringToColor } from "@/utils/generateHexColor";
 import { useAuth } from "@/contexts/AuthContext";
 import Input from "@/components/Input";
 import { v4 as uuidv4 } from "uuid";
+import { useSocket } from "@/contexts/SocketContext";
 
 interface IRoom {
   room: string;
@@ -25,7 +26,7 @@ interface IRoomsObjects {
 const Rooms = () => {
   const { username, token } = useAuth();
   const [rooms, setRooms] = useState<IRoomsObjects>({});
-  const [socket, setSocket] = useState<Socket | null>(null);
+  const socket = useSocket();
   const [isCreatingRoom, setIsCreatingRoom] = useState(false);
   const [roomData, setRoomData] = useState<IRoom>({
     room: "",
@@ -38,27 +39,15 @@ const Rooms = () => {
   } as IRoom);
 
   useEffect(() => {
-    const socketConnect = io("http://localhost:9000", {
-      query: {
-        token,
-      },
-    });
-
-    setSocket(socketConnect);
-
-    socketConnect.on("roomCreated", (room: IRoom) => {
+    socket?.on("roomCreated", (room: IRoom) => {
       console.log(room);
       setRooms((currentRooms) => ({ ...currentRooms, [room.id]: room }));
     });
 
-    socketConnect.on("connect_error", (error) => {
-      console.log(error.message); // vai imprimir "Authentication error" se o JWT for inválido
+    socket?.on("allRooms", (rooms: IRoomsObjects) => {
+      setRooms(rooms);
     });
-
-    return () => {
-      socketConnect.disconnect();
-    };
-  }, [token]);
+  }, [socket]);
 
   const onCreateRooms = () => {
     socket?.emit(
