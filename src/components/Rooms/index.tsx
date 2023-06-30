@@ -9,6 +9,7 @@ import Input from "@/components/Input";
 import { v4 as uuidv4 } from "uuid";
 import CustomRadio from "../CustomRadio";
 import { useSocket } from "@/contexts/SocketContext";
+import { useRouter } from "next/navigation";
 
 export interface IRoom {
   room: string;
@@ -29,6 +30,7 @@ const Rooms = () => {
   const [rooms, setRooms] = useState<IRoomsObjects>({});
   const socket = useSocket();
   const [isCreatingRoom, setIsCreatingRoom] = useState(false);
+  const router = useRouter();
   const [roomData, setRoomData] = useState<IRoom>({
     room: "",
     numberOfPlayers: 2,
@@ -51,6 +53,7 @@ const Rooms = () => {
   }, [socket]);
 
   const onCreateRooms = () => {
+    const id = uuidv4()
     socket?.emit(
       "createRoom",
       {
@@ -60,12 +63,12 @@ const Rooms = () => {
         duration: roomData.duration,
         players: [],
         closed: roomData.closed,
-        id: uuidv4(),
+        id: id
       },
       (response: string) => {
         if (response === "success") {
-          setIsCreatingRoom(false);
           setRoomData({} as IRoom);
+          router.push(`/room/${id}`);
         }
       }
     );
