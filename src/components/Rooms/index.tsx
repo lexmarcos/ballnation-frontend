@@ -2,36 +2,21 @@
 import classNames from "classnames";
 import styles from "./styles.module.css";
 import { ChangeEvent, useEffect, useState } from "react";
-import io, { Socket } from "socket.io-client";
-import { stringToColor } from "@/utils/generateHexColor";
-import { useAuth } from "@/contexts/AuthContext";
 import Input from "@/components/Input";
 import { v4 as uuidv4 } from "uuid";
 import CustomRadio from "../CustomRadio";
 import { useSocket } from "@/contexts/SocketContext";
 import { useRouter } from "next/navigation";
+import { IRoomGame } from "@/app/room/[id]/types";
+import { IFormOfRoom, IRoomObjects } from "./types";
 
-export interface IRoom {
-  room: string;
-  numberOfPlayers: 2 | 4 | 6 | 8;
-  typeOfGame: "classic" | "withPowerUps";
-  duration: number;
-  players: string[];
-  closed: string;
-  id: string;
-}
-
-interface IRoomsObjects {
-  [key: string]: IRoom;
-}
 
 const Rooms = () => {
-  const { username, token } = useAuth();
-  const [rooms, setRooms] = useState<IRoomsObjects>({});
+  const [rooms, setRooms] = useState<IRoomObjects>({});
   const socket = useSocket();
   const [isCreatingRoom, setIsCreatingRoom] = useState(false);
   const router = useRouter();
-  const [roomData, setRoomData] = useState<IRoom>({
+  const [roomData, setRoomData] = useState<IFormOfRoom>({
     room: "",
     numberOfPlayers: 2,
     typeOfGame: "classic",
@@ -39,21 +24,30 @@ const Rooms = () => {
     players: [],
     closed: "",
     id: "",
-  } as IRoom);
+  } as IFormOfRoom);
 
   useEffect(() => {
-    socket?.on("roomCreated", (room: IRoom) => {
+    socket?.on("roomCreated", (room: IRoomGame) => {
       console.log(room);
       setRooms((currentRooms) => ({ ...currentRooms, [room.id]: room }));
     });
 
-    socket?.on("allRooms", (rooms: IRoomsObjects) => {
+    socket?.on("roomUpdated", (rooms: IRoomGame) => {
+      setRooms(prev => {
+        return {
+          ...prev,
+          [rooms.id]: rooms
+        }
+      });
+    });
+
+    socket?.on("allRooms", (rooms: IRoomObjects) => {
       setRooms(rooms);
     });
   }, [socket]);
 
   const onCreateRooms = () => {
-    const id = uuidv4()
+    const id = uuidv4();
     socket?.emit(
       "createRoom",
       {
@@ -63,11 +57,19 @@ const Rooms = () => {
         duration: roomData.duration,
         players: [],
         closed: roomData.closed,
-        id: id
+        id: id,
+        teams: {
+          red: {
+            players: [],
+          },
+          blue: {
+            players: [],
+          },
+        },
       },
       (response: string) => {
         if (response === "success") {
-          setRoomData({} as IRoom);
+          setRoomData({} as IFormOfRoom);
           router.push(`/room/${id}`);
         }
       }
@@ -180,20 +182,15 @@ const Rooms = () => {
               </tr>
             </thead>
             <tbody>
-              {Object.values(rooms).map((room: IRoom) => (
+              {Object.values(rooms).map((room: IRoomGame) => (
                 <tr className="border-b border-white">
-                  <th
-                    scope="row"
-                    className=" px-6 py-4 font-medium whitespace-nowrap"
-                  >
+                  <th scope="row" className=" px-6 py-4 font-medium whitespace-nowrap">
                     {room.room}
                   </th>
                   <td className="px-6  py-4">
-                    {room.players.length}/{room.numberOfPlayers}
+                    {room.teams.blue.players.length + room.teams.red.players.length}/{room.numberOfPlayers}
                   </td>
-                  <td className="px-6  py-4">
-                    {room.closed ? "Fechada" : "Aberta"}
-                  </td>
+                  <td className="px-6  py-4">{room.isClosed ? "Fechada" : "Aberta"}</td>
                 </tr>
               ))}
             </tbody>
@@ -204,9 +201,7 @@ const Rooms = () => {
   };
 
   return (
-    <div
-      className={classNames(["bg-dark-purple rounded-xl  pt-4", styles.rooms])}
-    >
+    <div className={classNames(["bg-dark-purple rounded-xl  pt-4", styles.rooms])}>
       {isCreatingRoom ? createRooms() : roomsList()}
       <div className="m-6 flex align-middle flex-col justify-between">
         <div className="flex">

@@ -2,20 +2,14 @@
 import classNames from "classnames";
 import styles from "./styles.module.css";
 import { useEffect, useState } from "react";
-import io, { Socket } from "socket.io-client";
 import { stringToColor } from "@/utils/generateHexColor";
 import { useAuth } from "@/contexts/AuthContext";
 import { IoSend } from "react-icons/io5";
 import { useSocket } from "@/contexts/SocketContext";
-
-interface IMessage {
-  author: string;
-  text: string;
-  id: string;
-}
+import { IMessage } from "./types";
 
 const Chat = () => {
-  const { username, token } = useAuth();
+  const { username } = useAuth();
   const [messages, setMessages] = useState<IMessage[]>([]);
   const socket = useSocket();
   const [message, setMessage] = useState("");
