@@ -1,0 +1,14 @@
+.gameContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  width: 100vw;
+  outline: none;
+  background: rgb(32, 99, 32);
+}
+
+.gameCanva {
+  background: rgb(100, 207, 100);
+}

@@ -2,13 +2,16 @@
 import { useAuth } from "@/contexts/AuthContext";
 import { useSocket } from "@/contexts/SocketContext";
 import React, { useEffect, useRef, useState } from "react";
-import { IPlayer, IRoomGame } from "./types";
+import { IGameState, IPlayer, IRoomGame } from "./types";
+import styles from "./styles.module.css";
+import WaitingPlayers from "./waitingPlayers";
 
 function RoomGame({ params }: { params: { id: string } }) {
   const socket = useSocket();
   const { username } = useAuth();
-  const [room, setRoom] = useState<IRoomGame>({} as IRoomGame);
   const [isSeletedTeam, setIsSeletedTeam] = useState(false);
+  const [room, setRoom] = useState<IRoomGame>({} as IRoomGame);
+
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   useEffect(() => {
@@ -16,12 +19,8 @@ function RoomGame({ params }: { params: { id: string } }) {
       socket.emit("joinRoom", { room: params.id, username });
       socket.on("joinedRoom", (room: any) => {
         if (
-          room.teams.blue.players?.find(
-            (player: IPlayer) => player.username === username
-          ) ||
-          room.teams.red.players?.find(
-            (player: IPlayer) => player.username === username
-          )
+          room.teams.blue.players?.find((player: IPlayer) => player.username === username) ||
+          room.teams.red.players?.find((player: IPlayer) => player.username === username)
         ) {
           setIsSeletedTeam(true);
         }
@@ -36,122 +35,115 @@ function RoomGame({ params }: { params: { id: string } }) {
         console.log(room);
       });
 
+      socket.on("gameState", (gameState: IGameState) => {
+        console.log(gameState);
+      });
+
       socket.on("error", (error: any) => {
         console.error(room);
       });
     }
   }, [socket]);
 
-  const joinInTeam = (team: "blue" | "red") => {
-    setIsSeletedTeam(true);
-    if (socket && username) {
-      console.log("aqui");
-      socket.emit("joinTeam", { room: params.id, username, team });
-
-      socket.on("joinedRoom", (room: any) => {
-        console.log(room);
-        setRoom(room);
-      });
+  const handleMovePlayer = (key: string) => {
+    switch (key) {
+      case "w":
+        console.log("movendo W");
+        break;
+      case "a":
+        console.log("movendo A");
+        break;
+      case "s":
+        console.log("movendo S");
+        break;
+      case "d":
+        console.log("movendo D");
+        break;
+      default:
+        break;
     }
   };
 
-  const waitingPlayers = () => {
-    <div className="flex flex-col items-center justify-center h-screen">
-      {room.teams && (
-        <>
-          <h1 className="text-4xl mb-10">Esperando os jogadores</h1>
-          <div className="flex w-full justify-around">
-            <div className="flex flex-col items-center">
-              <h2 className="text-2xl mb-5 text-blue-500">Time Azul</h2>
-              <button
-                disabled={isSeletedTeam}
-                onClick={() => joinInTeam("blue")}
-                className="bg-blue-500 uppercase tracking-widest text-white font-bold text-sm rounded-md p-2 mt-3 w-full disabled:bg-slate-500"
-              >
-                Entrar no time azul
-              </button>
-              {room.teams.blue.players?.map((player) => (
-                <p key={player.socketId} className="mb-2">
-                  {player.username}
-                </p>
-              ))}
-            </div>
-            <div className="flex flex-col items-center">
-              <h2 className="text-2xl mb-5 text-red-500">Time Vermelho</h2>
-              <button
-                disabled={isSeletedTeam}
-                onClick={() => joinInTeam("red")}
-                className="bg-red-500 uppercase tracking-widest text-white font-bold text-sm rounded-md p-2 mt-3 w-full disabled:bg-slate-600"
-              >
-                Entrar no time vermelho
-              </button>
-              {room.teams.red.players?.map((player) => (
-                <p key={player.socketId} className="mb-2">
-                  {player.username}
-                </p>
-              ))}
-            </div>
-          </div>
-        </>
-      )}
-    </div>
-  };
-
   const renderGame = () => {
-    console.log("render game")
+    console.log("render game");
     return (
-      <div>
-      <canvas ref={canvasRef} width={500} height={500} />
-    </div>
+      <div
+        className={styles.gameContent}
+        autoFocus
+        tabIndex={-1}
+        onKeyDown={(e) => {
+          if (e.key === "w" || e.key === "a" || e.key === "s" || e.key === "d")
+            handleMovePlayer(e.key);
+        }}
+      >
+        <canvas className={styles.gameCanva} ref={canvasRef} width={1280} height={720} />
+      </div>
     );
   };
 
-  const drawPlayer = (x: number, y: number) => {
+  const drawGame = () => {
     if (canvasRef.current) {
-      const context = canvasRef.current.getContext('2d');
+      const context = canvasRef.current.getContext("2d");
       if (context) {
-        context.clearRect(0, 0, 500, 500); // Clear previous player position
-        context.fillStyle = '#000';
-        context.fillRect(x, y, 50, 50); // Draw new player position
+        // Draw field
+        context.fillStyle = "#008000";
+        context.fillRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+
+        // Draw goals
+        context.fillStyle = "#FFFFFF";
+        context.fillRect(0, canvasRef.current.height / 2 - 150, 10, 300); // Left goal
+        context.fillRect(canvasRef.current.width - 10, canvasRef.current.height / 2 - 150, 10, 300); // Right goal
+
+        // Draw ball
+        context.beginPath();
+        context.arc(
+          canvasRef.current.width / 2,
+          canvasRef.current.height / 2,
+          10,
+          0,
+          2 * Math.PI,
+          false
+        );
+        context.fillStyle = "#FFFFFF";
+        context.fill();
+
+        // Draw players
+        context.beginPath();
+        context.arc(100, canvasRef.current.height / 2, 20, 0, 2 * Math.PI, false);
+        context.fillStyle = "#0000FF";
+        context.fill(); // Blue player
+
+        context.beginPath();
+        context.arc(
+          canvasRef.current.width - 110,
+          canvasRef.current.height / 2,
+          20,
+          0,
+          2 * Math.PI,
+          false
+        );
+        context.fillStyle = "#FF0000";
+        context.fill(); // Red player
       }
     }
   };
 
   useEffect(() => {
-    if (canvasRef.current) {
-      const context = canvasRef.current.getContext('2d');
-      if (context) {
-        context.fillStyle = '#00ff00';
-        context.fillRect(0, 0, 500, 500);
-        drawPlayer(0, 0); // Initial player position
-      }
-    }
+    drawGame();
   }, []);
-
-  const handleMove = (key: string) => {
-    switch (key) {
-      case 'w':
-        console.log("movendo W")
-        break;
-      case 'a':
-        console.log("movendo A")
-        break;
-      case 's':
-        console.log("movendo S")
-        break;
-      case 'd':
-        console.log("movendo D")
-        break;
-      default:
-        break;
-    }
-    // drawPlayer(playerPosition.current.x, playerPosition.current.y);
-  };
 
   return (
     <>
-    {room.gameStatus === "waiting players" && waitingPlayers()}
-    {room.gameStatus === "playing" && renderGame()}
+      {room.gameStatus === "waiting players" && (
+        <WaitingPlayers
+          room={room}
+          setRoom={setRoom}
+          params={params}
+          isSeletedTeam={isSeletedTeam}
+          setIsSeletedTeam={setIsSeletedTeam}
+        />
+      )}
+      {room.gameStatus !== "waiting players" && renderGame()}
     </>
   );
 }
