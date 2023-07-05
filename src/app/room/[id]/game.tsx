@@ -1,6 +1,7 @@
 "use client";
 import React, { useRef, useEffect, useState } from "react";
 import styles from "./styles.module.css";
+import { Stage, Container, Sprite, Text, useTick } from '@pixi/react';
 
 interface Position {
   x: number;
@@ -65,14 +66,8 @@ const GamePage = () => {
     }
   };
 
-  useEffect(() => {
-    let frameCount = 0;
-    let animationFrameId = 0;
-    updateGame(frameCount, animationFrameId);
-    () => {
-      cancelAnimationFrame(animationFrameId);
-    };
-  }, [draw]);
+  const iter = useRef(0);
+
 
   return (
     <div
@@ -84,7 +79,16 @@ const GamePage = () => {
           handleMovePlayer(e.key);
       }}
     >
-     
+<Stage width={1280} height={720}>
+      <Sprite
+        image="https://pixijs.io/pixi-react/img/bunny.png"
+        x={ballPosition.x}
+        y={ballPosition.y}
+        
+        anchor={{ x: 0.5, y: 0.5 }}
+      />
+
+    </Stage>
     </div>
   );
 };
