@@ -28,73 +28,24 @@ const GamePage = ({ room }: { room: string }) => {
     }
   }, [socket]);
 
-  const [keysPressed, setKeysPressed] = useState<KeyPressedState>({});
+  const [keysPressed, setKeysPressed] = useState<string>("");
 
-  useEffect(() => {
-    function downHandler({ key }: KeyboardEvent) {
-      setKeysPressed((prevKeys) => ({ ...prevKeys, [key]: true }));
-    }
+  const socketMoveByKeys = {
+    w: socket?.emit("move", { move: "up", username, room }),
+    a: socket?.emit("move", { move: "left", username, room }),
+    s: socket?.emit("move", { move: "down", username, room }),
+    d: socket?.emit("move", { move: "right", username, room }),
+  };
 
-    function upHandler({ key }: KeyboardEvent) {
-      setKeysPressed((prevKeys) => ({ ...prevKeys, [key]: false }));
-    }
-
-    window.addEventListener("keydown", downHandler);
-    window.addEventListener("keyup", upHandler);
-
-    return () => {
-      window.removeEventListener("keydown", downHandler);
-      window.removeEventListener("keyup", upHandler);
-    };
-  }, []);
-
-  useEffect(() => {
-    if (keysPressed.w) {
-      socket?.emit("move", { move: "up", username, room });
-    }
-    if (keysPressed.a) {
-      socket?.emit("move", { move: "left", username, room });
-    }
-    if (keysPressed.s) {
-      socket?.emit("move", { move: "down", username, room });
-    }
-    if (keysPressed.d) {
-      socket?.emit("move", { move: "right", username, room });
-    }
-  }, [keysPressed]);
-
-  // const handleMovePlayer = (key: string) => {
-  //   switch (key) {
-  //     case "w":
-  //       socket?.emit("move", { move: "up", username, room });
-  //       break;
-  //     case "a":
-  //       socket?.emit("move", { move: "left", username, room });
-  //       break;
-  //     case "s":
-  //       socket?.emit("move", { move: "down", username, room });
-  //       break;
-  //     case "d":
-  //       socket?.emit("move", { move: "right", username, room });
-  //       break;
-  //     default:
-  //       break;
-  //   }
-  // };
-
-  useEffect(() => {
-    document.addEventListener("keydown", () => console.log("aqui"), false);
-  }, []);
+  useTick(delta => {
+    console.log(delta)
+  });
 
   return (
     <div
       className={styles.gameContent}
       autoFocus
       tabIndex={-1}
-      // onKeyDown={(e) => {
-      //   if (e.key === "w" || e.key === "a" || e.key === "s" || e.key === "d")
-      //     handleMovePlayer(e.key);
-      // }}
     >
       {gameState.ballPosition && (
         <Stage width={1280} height={720}>
@@ -103,7 +54,11 @@ const GamePage = ({ room }: { room: string }) => {
               g.clear();
               g.lineStyle(0);
               g.beginFill("#FFFFFF", 1);
-              g.drawCircle(gameState.ballPosition.x, gameState.ballPosition.y, 5);
+              g.drawCircle(
+                gameState.ballPosition.x,
+                gameState.ballPosition.y,
+                5
+              );
               g.endFill();
             }}
           />

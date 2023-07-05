@@ -7,6 +7,13 @@ const nextConfig = {
     });
     return config;
   },
+  rewrites: async () => [
+    {
+      source: "/room/:room",
+      destination: "/game/index.html",
+      
+    },
+  ],
 };
 
 module.exports = nextConfig;
