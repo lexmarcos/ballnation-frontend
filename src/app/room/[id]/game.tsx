@@ -1,94 +1,125 @@
 "use client";
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect, useState, use } from "react";
 import styles from "./styles.module.css";
-import { Stage, Container, Sprite, Text, useTick } from '@pixi/react';
+import { Stage, Container, Sprite, Text, useTick, Graphics } from "@pixi/react";
+import { useSocket } from "@/contexts/SocketContext";
+import { IGameState } from "./types";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface Position {
   x: number;
   y: number;
 }
 
-const GamePage = () => {
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const [ballPosition, setBallPosition] = useState<Position>({ x: 450, y: 300 });
+interface KeyPressedState {
+  [key: string]: boolean;
+}
 
-  const draw = (ctx: CanvasRenderingContext2D) => {
-    // Limpar tela
-    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+const GamePage = ({ room }: { room: string }) => {
+  const socket = useSocket();
+  const { username } = useAuth();
+  const [gameState, setGameState] = useState<IGameState>({} as IGameState);
 
-    // Desenhar o campo
-    ctx.fillStyle = "green";
-    ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-
-    // Desenhar os jogadores
-    ctx.fillStyle = "blue";
-    ctx.fillRect(100, 100, 50, 50);
-    ctx.fillStyle = "red";
-    ctx.fillRect(800, 100, 50, 50);
-
-    // Desenhar a bola
-    ctx.beginPath();
-    console.log(ballPosition);
-    ctx.arc(ballPosition.x, ballPosition.y, 20, 0, 2 * Math.PI, false);
-    ctx.fillStyle = "white";
-    ctx.fill();
-  };
-
-  const updateGame = (frameCount: number, animationFrameId: number) => {
-    frameCount++;
-    if (canvasRef.current) {
-      const context = canvasRef.current.getContext("2d");
-      if (context) {
-        draw(context);
-      }
+  useEffect(() => {
+    if (socket) {
+      socket.on("gameState", (gameState: IGameState) => {
+        setGameState(gameState);
+      });
     }
-    // console.log(ballPosition);
-    animationFrameId = requestAnimationFrame(() => updateGame(frameCount, animationFrameId));
-  };
+  }, [socket]);
 
-  const handleMovePlayer = (key: string) => {
-    switch (key) {
-      case "w":
-        setBallPosition((prevState) => ({ x: prevState.x, y: prevState.y - 20 }));
-        console.log(ballPosition);
-        break;
-      case "a":
-        setBallPosition((prevState) => ({ x: prevState.x - 20, y: prevState.y }));
-        break;
-      case "s":
-        setBallPosition((prevState) => ({ x: prevState.x, y: prevState.y + 20 }));
-        break;
-      case "d":
-        setBallPosition((prevState) => ({ x: prevState.x + 20, y: prevState.y }));
-        break;
-      default:
-        break;
+  const [keysPressed, setKeysPressed] = useState<KeyPressedState>({});
+
+  useEffect(() => {
+    function downHandler({ key }: KeyboardEvent) {
+      setKeysPressed((prevKeys) => ({ ...prevKeys, [key]: true }));
     }
-  };
 
-  const iter = useRef(0);
+    function upHandler({ key }: KeyboardEvent) {
+      setKeysPressed((prevKeys) => ({ ...prevKeys, [key]: false }));
+    }
 
+    window.addEventListener("keydown", downHandler);
+    window.addEventListener("keyup", upHandler);
+
+    return () => {
+      window.removeEventListener("keydown", downHandler);
+      window.removeEventListener("keyup", upHandler);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (keysPressed.w) {
+      socket?.emit("move", { move: "up", username, room });
+    }
+    if (keysPressed.a) {
+      socket?.emit("move", { move: "left", username, room });
+    }
+    if (keysPressed.s) {
+      socket?.emit("move", { move: "down", username, room });
+    }
+    if (keysPressed.d) {
+      socket?.emit("move", { move: "right", username, room });
+    }
+  }, [keysPressed]);
+
+  // const handleMovePlayer = (key: string) => {
+  //   switch (key) {
+  //     case "w":
+  //       socket?.emit("move", { move: "up", username, room });
+  //       break;
+  //     case "a":
+  //       socket?.emit("move", { move: "left", username, room });
+  //       break;
+  //     case "s":
+  //       socket?.emit("move", { move: "down", username, room });
+  //       break;
+  //     case "d":
+  //       socket?.emit("move", { move: "right", username, room });
+  //       break;
+  //     default:
+  //       break;
+  //   }
+  // };
+
+  useEffect(() => {
+    document.addEventListener("keydown", () => console.log("aqui"), false);
+  }, []);
 
   return (
     <div
       className={styles.gameContent}
       autoFocus
       tabIndex={-1}
-      onKeyDown={(e) => {
-        if (e.key === "w" || e.key === "a" || e.key === "s" || e.key === "d")
-          handleMovePlayer(e.key);
-      }}
+      // onKeyDown={(e) => {
+      //   if (e.key === "w" || e.key === "a" || e.key === "s" || e.key === "d")
+      //     handleMovePlayer(e.key);
+      // }}
     >
-<Stage width={1280} height={720}>
-      <Sprite
-        image="https://pixijs.io/pixi-react/img/bunny.png"
-        x={ballPosition.x}
-        y={ballPosition.y}
-        
-        anchor={{ x: 0.5, y: 0.5 }}
-      />
-
-    </Stage>
+      {gameState.ballPosition && (
+        <Stage width={1280} height={720}>
+          <Graphics
+            draw={(g) => {
+              g.clear();
+              g.lineStyle(0);
+              g.beginFill("#FFFFFF", 1);
+              g.drawCircle(gameState.ballPosition.x, gameState.ballPosition.y, 5);
+              g.endFill();
+            }}
+          />
+          {gameState.playersPositions?.map((player) => (
+            <Graphics
+              draw={(g) => {
+                g.clear();
+                g.lineStyle(0);
+                g.beginFill("#FFFFFF", 1);
+                g.drawCircle(player.x, player.y, 20);
+                g.endFill();
+              }}
+            />
+          ))}
+        </Stage>
+      )}
     </div>
   );
 };
