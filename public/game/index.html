@@ -1,14 +1,34 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Game</title>
-</head>
-<body>
-    <h1>Game</h1>
-    <script src="https://cdn.socket.io/4.4.1/socket.io.min.js" integrity="sha384-fKnu0iswBIqkjxrhQCTZ7qlLHOFEgNkRmK2vaO/LbTZSXdJfAu6ewRBdwHPhBo/H" crossorigin="anonymous"></script>
+  </head>
+  <body>
+    <div id="awaiting-page">
+      <div>
+        <h1>Time vermelho</h1>
+        <div id="red-players"></div>
+        <button onclick="joinOnTeam('red')">entrar no time vermelho</button>
+      </div>
+      <div>
+        <h1>Time azul</h1>
+        <div id="blue-players"></div>
+        <button onclick="joinOnTeam('blue')">entrar no time azul</button>
+      </div>
+    </div>
+    <div id="game-page">
+      <canvas id="canvas-game" width="1280" height="720" style="background: black"></canvas>
+    </div>
+    <script
+      src="https://cdn.socket.io/4.4.1/socket.io.min.js"
+      integrity="sha384-fKnu0iswBIqkjxrhQCTZ7qlLHOFEgNkRmK2vaO/LbTZSXdJfAu6ewRBdwHPhBo/H"
+      crossorigin="anonymous"
+    ></script>
+    <script src="/game/utils.js"></script>
     <script src="/game/script.js"></script>
-</body>
+    <script src="/game/game.js"></script>
+  </body>
 </html>
