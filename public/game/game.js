@@ -30,8 +30,8 @@ socket.on("gameState", (_gameState) => {
 });
 
 function drawPlayers() {
-  for (const player of Object.values(gameState.playersPositions)) {
-    drawCircle("#FFFFFF", player.x, player.y, 30);
+  for (const player of gameState.playersInfos) {
+    drawCircle(player.team, player.position.x, player.position.y, 30);
   }
 }
 
