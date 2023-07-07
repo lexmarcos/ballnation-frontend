@@ -25,12 +25,13 @@ function drawCircle(cor, x, y, raio) {
 let gameState = {};
 
 socket.on("gameState", (_gameState) => {
+  console.log(_gameState);
   gameState = _gameState;
 });
 
 function drawPlayers() {
   for (const player of Object.values(gameState.playersPositions)) {
-    drawCircle("#FFFFFF", player.x, player.y, 20);
+    drawCircle("#FFFFFF", player.x, player.y, 30);
   }
 }
 
@@ -56,16 +57,27 @@ const handleMoves = () => {
   if (isPressed("d")) {
     socket?.emit("move", { move: "right", username, room });
   }
+  if (isPressed(" ")) {
+    socket?.emit("move", { move: "shoot", username, room });
+  }
+};
+
+const setScore = (score) => {
+  const blueScore = getElement("blue-score");
+  blueScore.innerText = score.blue;
+  const redScore = getElement("red-score");
+  redScore.innerText = score.red;
 };
 
 function render() {
-  if (gameState) {
-    clearCanvas();
-    requestAnimationFrame(render);
+  clearCanvas();
+  requestAnimationFrame(render);
+  if (Object.values(gameState).length > 0) {
     handleMoves();
+    setScore(gameState.score);
     drawRect("#FFFFFF", 0, worldBounds.max.y / 2 - 150, 10, 300);
     drawRect("#FFFFFF", 1270, worldBounds.max.y / 2 - 150, 10, 300);
-    drawCircle("#FFFFFF", gameState.ballPosition.x, gameState.ballPosition.y, 5);
+    drawCircle("#FFFFFF", gameState.ballPosition.x, gameState.ballPosition.y, 10);
     drawPlayers();
   }
 }

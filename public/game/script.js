@@ -35,7 +35,7 @@ const onJoinedRoomOrTeam = (roomData) => {
     bluePlayersElement.appendChild(generatePlayerElement(player));
   }
   for (const player of roomData.teams.red.players) {
-    bluePlayersElement.appendChild(generatePlayerElement(player));
+    redPlayersElement.appendChild(generatePlayerElement(player));
   }
 };
 
