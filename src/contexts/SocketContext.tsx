@@ -2,6 +2,7 @@
 import React, { createContext, useState, useEffect, FC, ReactNode, useContext } from "react";
 import { Socket, io } from "socket.io-client";
 import { useAuth } from "./AuthContext";
+import { useRouter } from "next/navigation";
 
 // Crie o Context
 const SocketContext = createContext<Socket | null>(null);
@@ -10,7 +11,7 @@ const SocketContext = createContext<Socket | null>(null);
 export const SocketProvider = ({ children }: { children: ReactNode }) => {
   const [socket, setSocket] = useState<Socket | null>(null);
   const { token } = useAuth();
-  console.log(token);
+  const router = useRouter();
   useEffect(() => {
     if (!!token) {
       const newSocket = io("http://localhost:9000", {
@@ -20,7 +21,7 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
       });
 
       newSocket.on("connect_error", (error) => {
-        console.log(error.message);
+        router.push("/login");
       });
 
       console.log(newSocket);

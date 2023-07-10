@@ -32,7 +32,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     if (token) {
       saveToken(token);
     } else {
-      router.push("/login");
+      router.push("/login", {
+        query: {
+          error: "You must be logged in to access this page",
+        },
+      });
     }
     if (username) {
       setUsername(username);

@@ -1,0 +1,289 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,700;0,900;1,400&display=swap");
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Roboto", sans-serif;
+  background-color: #1b1423;
+}
+
+body * {
+  box-sizing: border-box;
+}
+
+.shell-game-and-chat {
+  height: 100vh;
+}
+
+.startPlayNav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  background: #1b1423;
+  color: #fff;
+  font-weight: 800;
+  font-size: 12pt;
+  text-transform: uppercase;
+  height: 100px;
+  width: 100%;
+  background: #ffffff10;
+  border-bottom: 2px solid rgba(0, 0, 0, 0.532);
+  position: absolute;
+  top: 0;
+}
+
+.startPlayButton {
+  background: #00b539;
+  border: none;
+  border-radius: 10px;
+  padding: 15px 30px;
+  color: #fff;
+  font-weight: 800;
+  font-size: 12pt;
+  text-transform: uppercase;
+  letter-spacing: 5px;
+  cursor: pointer;
+  display: none;
+}
+
+.awaiting-page {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: calc(100vh - 350px);
+  margin: auto;
+}
+
+.team-players {
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: center;
+  color: #fff;
+  border-radius: 30px;
+  padding: 40px;
+  padding-bottom: 80px;
+  min-width: 400px;
+  min-height: 600px;
+  position: relative;
+}
+
+.team-players > h1 {
+  font-size: 20pt;
+  font-weight: 800;
+  margin-bottom: 20px;
+  text-transform: uppercase;
+  letter-spacing: 5px;
+}
+
+.team-players > div {
+  width: 100%;
+}
+
+.team-players h4 {
+  font-size: 16pt;
+  font-weight: 800;
+  margin-bottom: 20px;
+  text-transform: uppercase;
+  letter-spacing: 5px;
+  background: #0000006a;
+  padding: 20px 20px;
+  border-radius: 10px;
+}
+
+.blue-team-card {
+  background: #0084ff;
+  box-shadow: 0px 0px 50px 0px #0084ff73;
+}
+
+.red-team-card {
+  background: #ff0000;
+  box-shadow: 0px 0px 50px 0px #ff000073;
+}
+
+.shell-teams {
+  display: flex;
+  flex-direction: row;
+  gap: 10vw;
+  justify-content: center;
+  align-items: start;
+  width: 60%;
+  position: relative;
+}
+
+.team-button {
+  border: none;
+  border-top: 3px solid #fff;
+  width: 100%;
+  position: absolute;
+  background: #fff;
+  height: 80px;
+  bottom: 0;
+  border-radius: 0 0 30px 30px;
+  font-weight: 800;
+  font-size: 16pt;
+  cursor: pointer;
+  text-transform: uppercase;
+}
+
+.red-team-button {
+  color: #c70000;
+}
+
+.blue-team-button {
+  color: #0061bc;
+}
+
+.team-button:disabled {
+  background: #00000057;
+  color: #ffffff96;
+  cursor: not-allowed;
+  border: none;
+}
+
+.game-page {
+  display: none;
+  justify-content: center;
+  align-items: center;
+  height: calc(100vh - 350px);
+}
+
+.canvas-game {
+  background: #00b539;
+  border-radius: 10px;
+  outline: 10px solid #fff;
+  background: url("/assets/campo.png");
+}
+
+.scores {
+  display: flex;
+  flex-direction: row;
+  /* justify-content: center; */
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 80px;
+  background: #ffffff;
+}
+
+.scores > div {
+  font-weight: 800;
+  font-size: 30pt;
+  color: #ffffff;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 0 20px;
+}
+
+.blue-score {
+  background: #0084ff;
+  height: 100%;
+  width: 100%;
+  justify-content: flex-end;
+}
+
+.red-score {
+  background: #ff0000;
+  height: 100%;
+  width: 100%;
+}
+
+.winner-page {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100vw;
+  margin: auto;
+  position: fixed;
+  background: #00000058;
+  z-index: 99;
+  top: 0;
+  backdrop-filter: blur(10px);
+  display: none;
+}
+
+.card-winner {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  color: #fff;
+  border-radius: 30px;
+  padding: 40px;
+  padding-bottom: 80px;
+  min-width: 400px;
+  min-height: 600px;
+  position: relative;
+  background: #4a2871;
+  box-shadow: 0px 0px 50px 0px #4a287173;
+  outline: 10px solid #6c30b073;
+  text-align: center;
+  position: relative;
+}
+
+#progress-bar-container {
+  height: 20px;
+  width: 100%;
+  position: absolute;
+  bottom: 0;
+}
+
+#progress-bar {
+  height: 100%;
+  width: 100%;
+  background: rgb(255, 255, 255);
+  border-radius: 30px;
+  transition: width 1s linear;
+}
+
+.chat {
+  width: 100%;
+}
+
+#chat-input {
+  width: 100%;
+  height: 50px;
+  border: none;
+  padding: 10px;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+  outline: none;
+  background: #3a284f;
+  color: #fff;
+}
+
+.chat-input {
+  width: 100%;
+  height: 50px;
+  display: flex;
+  outline: 2px solid #0000007f;
+}
+
+.chat-button {
+  height: 100%;
+  background: #7c43bc;
+  border: none;
+  cursor: pointer;
+  color: #fff;
+  font-weight: 800;
+  padding: 0 20px;
+}
+
+.chat-messages {
+  width: 100%;
+  height: 300px;
+  background: #0f0b13;
+  color: #fff;
+  font-size: 14pt;
+  padding: 30px 40px;
+}
+
+.message-author {
+  font-weight: 800;
+}

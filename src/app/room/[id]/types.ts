@@ -33,3 +33,19 @@ export interface IRoomGame {
   id: string;
   isClosed: boolean;
 }
+
+interface IPosition {
+  x: number;
+  y: number;
+}
+
+export interface IGameState {
+  gameLoopInterval: number;
+  score: {
+    blue: number;
+    red: number;
+  }
+  winner: "blue" | "red" | "draw";
+  playersPositions: IPosition[]
+  ballPosition: IPosition;
+}

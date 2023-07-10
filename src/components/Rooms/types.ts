@@ -4,7 +4,7 @@ export interface IFormOfRoom {
     room: string;
     numberOfPlayers: 2 | 4 | 6 | 8;
     typeOfGame: "classic" | "withPowerUps";
-    duration: number;
+    goalsToWin: number;
     players: string[];
     closed: string;
     id: string;

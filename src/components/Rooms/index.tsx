@@ -9,18 +9,19 @@ import { useSocket } from "@/contexts/SocketContext";
 import { useRouter } from "next/navigation";
 import { IRoomGame } from "@/app/room/[id]/types";
 import { IFormOfRoom, IRoomObjects } from "./types";
-
+import { useAuth } from "@/contexts/AuthContext";
 
 const Rooms = () => {
   const [rooms, setRooms] = useState<IRoomObjects>({});
   const socket = useSocket();
   const [isCreatingRoom, setIsCreatingRoom] = useState(false);
   const router = useRouter();
+  const { username } = useAuth();
   const [roomData, setRoomData] = useState<IFormOfRoom>({
     room: "",
     numberOfPlayers: 2,
     typeOfGame: "classic",
-    duration: 5,
+    goalsToWin: 5,
     players: [],
     closed: "",
     id: "",
@@ -28,16 +29,15 @@ const Rooms = () => {
 
   useEffect(() => {
     socket?.on("roomCreated", (room: IRoomGame) => {
-      console.log(room);
       setRooms((currentRooms) => ({ ...currentRooms, [room.id]: room }));
     });
 
     socket?.on("roomUpdated", (rooms: IRoomGame) => {
-      setRooms(prev => {
+      setRooms((prev) => {
         return {
           ...prev,
-          [rooms.id]: rooms
-        }
+          [rooms.id]: rooms,
+        };
       });
     });
 
@@ -51,10 +51,11 @@ const Rooms = () => {
     socket?.emit(
       "createRoom",
       {
+        owner: username,
         room: roomData.room,
         numberOfPlayers: roomData.numberOfPlayers,
         typeOfGame: roomData.typeOfGame,
-        duration: roomData.duration,
+        goalsToWin: roomData.goalsToWin,
         players: [],
         closed: roomData.closed,
         id: id,
@@ -78,7 +79,7 @@ const Rooms = () => {
 
   const createRooms = () => {
     return (
-      <div className="flex flex-col px-6">
+      <div className="flex flex-col px-6 gap-6">
         <Input
           label="Nome da sala"
           type="text"
@@ -99,7 +100,6 @@ const Rooms = () => {
               numberOfPlayers: parseInt(e.target.value) as 2 | 4 | 6 | 8,
             })
           }
-          //setRoomData={setRoomData}
         ></CustomRadio>
 
         <select
@@ -116,49 +116,17 @@ const Rooms = () => {
           <option value="withPowerUps">Com poderes</option>
         </select>
 
-        {/*<select
-          value={roomData.numberOfPlayers}
-          onChange={(e) =>
-            setRoomData({
-              ...roomData,
-              numberOfPlayers: parseInt(e.target.value) as 2 | 4 | 6 | 8,
-            })
-          }
-          className="mt-3 bg-darkest-purple outline-none text-white rounded-lg p-3"
-        >
-          <option value="2">2</option>
-          <option value="4">4</option>
-          <option value="6">6</option>
-          <option value="8">8</option>{" "}
-        </select>*/}
-
         <CustomRadio
-          label={"Duração da partida"}
-          values={[5, 10, 15]}
-          name="matchDuration"
+          label={"Gols para vencer"}
+          values={[3, 5, 15]}
+          name="matchgoalsToWin"
           onChange={(e: ChangeEvent<HTMLInputElement>) =>
             setRoomData({
               ...roomData,
-              duration: parseInt(e.target.value) as 2 | 4 | 6 | 8,
+              goalsToWin: parseInt(e.target.value),
             })
           }
-          //setRoomData={setRoomData}
         ></CustomRadio>
-
-        {/*<select
-          value={roomData.duration}
-          onChange={(e) =>
-            setRoomData({
-              ...roomData,
-              duration: parseInt(e.target.value),
-            })
-          }
-          className="mt-3 bg-darkest-purple outline-none text-white rounded-lg p-3"
-        >
-          <option value="5">5</option>
-          <option value="10">10</option>
-          <option value="15">15</option>
-        </select>*/}
       </div>
     );
   };
@@ -188,7 +156,8 @@ const Rooms = () => {
                     {room.room}
                   </th>
                   <td className="px-6  py-4">
-                    {room.teams.blue.players.length + room.teams.red.players.length}/{room.numberOfPlayers}
+                    {room.teams.blue.players.length + room.teams.red.players.length}/
+                    {room.numberOfPlayers}
                   </td>
                   <td className="px-6  py-4">{room.isClosed ? "Fechada" : "Aberta"}</td>
                 </tr>
