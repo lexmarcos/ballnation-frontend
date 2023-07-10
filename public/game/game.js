@@ -16,17 +16,68 @@ function drawRect(cor, x, y, largura, altura) {
 }
 
 function drawCircle(cor, x, y, raio) {
-  ctx.fillStyle = cor;
+  ctx.fillStyle = "#FFFFFF";
   ctx.beginPath();
   ctx.arc(x, y, raio, 0, 2 * Math.PI);
   ctx.fill();
+  const borderColor = cor; // cor da borda
+  const borderWidth = 5; // largura da borda
+  ctx.strokeStyle = borderColor;
+  ctx.lineWidth = borderWidth;
+  ctx.stroke();
 }
 
 let gameState = {};
 
 socket.on("gameState", (_gameState) => {
-  console.log(_gameState);
   gameState = _gameState;
+});
+
+const translateTeams = {
+  blue: "Azul",
+  red: "Vermelho",
+};
+
+const playLoadingAnimation = () => {
+  const progressBar = document.getElementById("progress-bar");
+
+  let width = 100; // A width inicial da barra de progresso
+  let interval = setInterval(() => {
+    width -= 1; // Decrementa a largura a cada segundo
+    progressBar.style.width = width + "%";
+    if (width <= 0) {
+      clearInterval(interval); // Parar o intervalo quando a largura chega a zero
+    }
+  }, 90);
+};
+
+socket.on("gameFinished", (wonTeam) => {
+  const wonPage = getElement("winner-page");
+  wonPage.style.display = "flex";
+  const teamWonElement = getElement("card-winner");
+  teamWonElement.innerHTML = `
+    <lottie-player
+      src="https://assets7.lottiefiles.com/packages/lf20_touohxv0.json"
+      background="transparent"
+      speed="1"
+      style="width: 400px; height: 400px"
+      autoplay
+    ></lottie-player>
+    <h1>Vitória do time<br /><span id="winner-team">${translateTeams[wonTeam]}</span></h1>
+    <div id="progress-bar-container">
+      <div id="progress-bar"></div>
+    </div>
+    `;
+  playLoadingAnimation();
+});
+
+socket.on("awaitingPlayersAgain", () => {
+  const awaitingPage = getElement("awaiting-page");
+  awaitingPage.style.display = "flex";
+  const gamePage = getElement("game-page");
+  gamePage.style.display = "none";
+  const wonPage = getElement("winner-page");
+  wonPage.style.display = "none";
 });
 
 function drawPlayers() {
@@ -77,7 +128,7 @@ function render() {
     setScore(gameState.score);
     drawRect("#FFFFFF", 0, worldBounds.max.y / 2 - 150, 10, 300);
     drawRect("#FFFFFF", 1270, worldBounds.max.y / 2 - 150, 10, 300);
-    drawCircle("#FFFFFF", gameState.ballPosition.x, gameState.ballPosition.y, 10);
+    drawCircle("#000000", gameState.ballPosition.x, gameState.ballPosition.y, 10);
     drawPlayers();
   }
 }

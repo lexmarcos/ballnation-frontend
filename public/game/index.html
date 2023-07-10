@@ -1,38 +1,75 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <link rel="stylesheet" href="/game/style.css" />
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Game</title>
   </head>
   <body>
-    <div id="awaiting-page">
-      <div>
-        <h1>Time vermelho</h1>
-        <div id="red-players"></div>
-        <button onclick="joinOnTeam('red')">entrar no time vermelho</button>
+    <div class="shell-game-and-chat">
+      <div id="awaiting-page" class="awaiting-page">
+        <div class="startPlayNav">
+          <h2>Esperando <span id="owner-username"></span> iniciar o jogo...</h2>
+          <button onclick="startGame()" class="startPlayButton" id="startPlayButton">
+            Iniciar jogo
+          </button>
+        </div>
+        <div class="shell-teams">
+          <div class="team-players blue-team-card">
+            <h1>Time azul</h1>
+            <div id="blue-players"></div>
+            <button
+              onclick="joinOnTeam('blue')"
+              class="team-button blue-team-button"
+              id="blue-team-button"
+            >
+              entrar no time azul
+            </button>
+          </div>
+          <div class="team-players red-team-card">
+            <h1>Time vermelho</h1>
+            <div id="red-players"></div>
+            <button
+              onclick="joinOnTeam('red')"
+              class="team-button red-team-button"
+              id="red-team-button"
+            >
+              entrar no time vermelho
+            </button>
+          </div>
+        </div>
       </div>
-      <div>
-        <h1>Time azul</h1>
-        <div id="blue-players"></div>
-        <button onclick="joinOnTeam('blue')">entrar no time azul</button>
+      <div class="winner-page" id="winner-page">
+        <div class="card-winner" id="card-winner"></div>
       </div>
-    </div>
-    <div id="game-page">
-      <div>
-        blue: <span id="blue-score">0</span>
+      <div id="game-page" class="game-page">
+        <div class="scores">
+          <div class="blue-score">Time Azul <span id="blue-score">0</span></div>
+          <div class="red-score"><span id="red-score">0</span> Time Vermelho</div>
+        </div>
+        <canvas id="canvas-game" width="1280" height="720" class="canvas-game"></canvas>
       </div>
-      <div>
-        red: <span id="red-score">0</span>
+      <div class="chat">
+        <div class="chat-messages" id="chat-messages"></div>
+        <div class="chat-input">
+          <input
+            type="text"
+            placeholder="Digite sua mensagem"
+            id="chat-input"
+            onkeydown="handleKeyDown(event)"
+          />
+          <button onclick="sendMessage()" class="chat-button" id="chat-button">Enviar</button>
+        </div>
       </div>
-      <canvas id="canvas-game" width="1280" height="720" style="background: black"></canvas>
     </div>
     <script
       src="https://cdn.socket.io/4.4.1/socket.io.min.js"
       integrity="sha384-fKnu0iswBIqkjxrhQCTZ7qlLHOFEgNkRmK2vaO/LbTZSXdJfAu6ewRBdwHPhBo/H"
       crossorigin="anonymous"
     ></script>
+    <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
     <script src="/game/utils.js"></script>
     <script src="/game/script.js"></script>
     <script src="/game/game.js"></script>

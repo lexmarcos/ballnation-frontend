@@ -1,7 +1,5 @@
 import classNames from "classnames";
 import styles from "./style.module.css";
-import { Dispatch, SetStateAction } from "react";
-import { IRoom } from "../Rooms";
 
 interface CustomRadioProps {
   label: string;
@@ -25,7 +23,7 @@ const CustomRadio = ({
   error,
   required,
   color,
-}: //setRoomData,
+}:
 CustomRadioProps) => {
   return (
     <div className="">

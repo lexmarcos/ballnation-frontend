@@ -10,7 +10,7 @@ import Input from "@/components/Input";
 import Link from "next/link";
 import { api } from "@/services/api/api";
 import { useAuth } from "@/contexts/AuthContext";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 export default function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -18,6 +18,7 @@ export default function Login() {
 
   const { saveUsername, saveToken } = useAuth();
   const router = useRouter();
+
   const login = async () => {
     setLoading(true);
     const response = await api.auth.login(username, password);
