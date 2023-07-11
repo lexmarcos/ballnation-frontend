@@ -81,38 +81,69 @@ socket.on("awaitingPlayersAgain", () => {
 });
 
 function drawPlayers() {
-  for (const player of gameState.playersInfos) {
+  for (const key in gameState.playersData) {
+    const player = gameState.playersData[key];
     drawCircle(player.team, player.position.x, player.position.y, 30);
+  }
+}
+
+function drawPaddles() {
+  for (const keyPaddle in gameState.paddlesData) {
+    const paddle = gameState.paddlesData[keyPaddle];
+    if (!paddle.isTaken) {
+      drawCircle("#ffa600", paddle.x, paddle.y, 10);
+    }
   }
 }
 
 const keyMap = {};
 
 document.addEventListener("keyup", ({ key }) => (keyMap[key] = false));
-document.addEventListener("keypress", ({ key }) => (keyMap[key] = true));
+document.addEventListener("keydown", ({ key }) => (keyMap[key] = true));
 
 function isPressed(keyCode) {
   return keyMap[keyCode] || false;
 }
 
+function isComboPressed(keys) {
+  return keys.every(isPressed);
+}
+
 const handleMoves = () => {
-  if (isPressed("w")) {
-    socket?.emit("move", { move: "up", username, room });
+  if (isComboPressed(["Shift", "w"])) {
+    console.log("boostando");
+    socket?.emit("move", { move: "boostUp", username, room });
   }
-  if (isPressed("s")) {
-    socket?.emit("move", { move: "down", username, room });
+  if (isComboPressed(["Shift", "s"])) {
+    console.log("boostando");
+    socket?.emit("move", { move: "boostDown", username, room });
   }
-  if (isPressed("a")) {
-    socket?.emit("move", { move: "left", username, room });
+  if (isComboPressed(["Shift", "a"])) {
+    console.log("boostando");
+    socket?.emit("move", { move: "boostLeft", username, room });
   }
-  if (isPressed("d")) {
-    socket?.emit("move", { move: "right", username, room });
+  if (isComboPressed(["Shift", "d"])) {
+    console.log("boostando");
+    socket?.emit("move", { move: "boostRight", username, room });
   }
-  if (isPressed(" ")) {
-    socket?.emit("move", { move: "shoot", username, room });
+  if (!isPressed("Shift")) {
+    if (isPressed("w")) {
+      socket?.emit("move", { move: "up", username, room });
+    }
+    if (isPressed("s")) {
+      socket?.emit("move", { move: "down", username, room });
+    }
+    if (isPressed("a")) {
+      socket?.emit("move", { move: "left", username, room });
+    }
+    if (isPressed("d")) {
+      socket?.emit("move", { move: "right", username, room });
+    }
+    if (isPressed(" ")) {
+      socket?.emit("move", { move: "shoot", username, room });
+    }
   }
 };
-
 const setScore = (score) => {
   const blueScore = getElement("blue-score");
   blueScore.innerText = score.blue;
@@ -130,6 +161,8 @@ function render() {
     drawRect("#FFFFFF", 1270, worldBounds.max.y / 2 - 150, 10, 300);
     drawCircle("#000000", gameState.ballPosition.x, gameState.ballPosition.y, 10);
     drawPlayers();
+    ctx.globalCompositeOperation = "destination-over";
+    drawPaddles();
   }
 }
 
