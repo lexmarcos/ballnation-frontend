@@ -10,6 +10,7 @@ import { useRouter } from "next/navigation";
 import { IRoomGame } from "@/app/room/[id]/types";
 import { IFormOfRoom, IRoomObjects } from "./types";
 import { useAuth } from "@/contexts/AuthContext";
+import Link from "next/link";
 
 const Rooms = () => {
   const [rooms, setRooms] = useState<IRoomObjects>({});
@@ -102,20 +103,6 @@ const Rooms = () => {
           }
         ></CustomRadio>
 
-        <select
-          value={roomData.typeOfGame}
-          onChange={(e) =>
-            setRoomData({
-              ...roomData,
-              typeOfGame: e.target.value as "classic" | "withPowerUps",
-            })
-          }
-          className="mt-3 bg-darkest-purple outline-none text-white rounded-lg p-3"
-        >
-          <option value="classic">Clássico</option>
-          <option value="withPowerUps">Com poderes</option>
-        </select>
-
         <CustomRadio
           label={"Gols para vencer"}
           values={[3, 5, 15]}
@@ -151,7 +138,10 @@ const Rooms = () => {
             </thead>
             <tbody>
               {Object.values(rooms).map((room: IRoomGame) => (
-                <tr className="border-b border-white">
+                <tr
+                  className="border-b border-white cursor-pointer"
+                  onClick={() => router.push(`room/${room.id}`)}
+                >
                   <th scope="row" className=" px-6 py-4 font-medium whitespace-nowrap">
                     {room.room}
                   </th>

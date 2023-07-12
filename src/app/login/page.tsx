@@ -15,6 +15,7 @@ export default function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showError, setShowError] = useState(false);
 
   const { saveUsername, saveToken } = useAuth();
   const router = useRouter();
@@ -22,11 +23,17 @@ export default function Login() {
   const login = async () => {
     setLoading(true);
     const response = await api.auth.login(username, password);
+    if (response.status === 401) {
+      setShowError(true);
+      setLoading(false);
+      return;
+    }
     if (response.status === 200) {
       const data = await response.json();
       saveUsername(username);
       saveToken(data.token);
       router.push("/");
+      setLoading(false);
     }
   };
 
@@ -46,6 +53,14 @@ export default function Login() {
             Crie uma!
           </Link>
         </h5>
+        {showError && (
+          <div
+            className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mt-5"
+            role="alert"
+          >
+            Usuário ou senha inválidos!
+          </div>
+        )}
         <Input
           className="mt-6"
           value={username}
@@ -64,7 +79,7 @@ export default function Login() {
           onClick={login}
           className="bg-main-color uppercase tracking-widest text-white font-bold text-sm rounded-md p-2 mt-3 w-full"
         >
-          login
+          {loading ? "Carregando..." : "Entrar"}
         </button>
       </div>
       <div className="bg-secondary-green-color xl-9 xs-0 sm-6 md-7 lg-8 2xl-10 flex justify-center align-middle">

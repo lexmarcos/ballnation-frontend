@@ -16,10 +16,13 @@ export default function Signup() {
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
   const router = useRouter();
+  const [showError, setShowError] = useState(false);
 
   const signup = async () => {
     const res = await api.auth.signup(email, username, password);
-    console.log(res.status);
+    if (res.status === 400) {
+      setShowError(true);
+    }
     if (res.status === 200) {
       router.push("/login");
     }
@@ -42,6 +45,14 @@ export default function Signup() {
             Entre aqui!
           </Link>
         </h5>
+        {showError && (
+          <div
+            className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mt-5"
+            role="alert"
+          >
+            Este email ou usuário já está em uso!
+          </div>
+        )}
         <Input
           className="mt-6"
           value={email}
