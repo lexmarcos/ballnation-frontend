@@ -5,7 +5,6 @@ import React, { useEffect, useRef, useState } from "react";
 import { IGameState, IPlayer, IRoomGame } from "./types";
 import styles from "./styles.module.css";
 import WaitingPlayers from "./waitingPlayers";
-import GamePage from "./game";
 
 function RoomGame({ params }: { params: { id: string } }) {
   const socket = useSocket();
@@ -51,7 +50,6 @@ function RoomGame({ params }: { params: { id: string } }) {
           setIsSeletedTeam={setIsSeletedTeam}
         />
       )}
-      {room.gameStatus !== "waiting players" && <GamePage room={params.id} />}
     </>
   );
 }
