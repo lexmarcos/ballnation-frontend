@@ -12,13 +12,7 @@ interface IProps {
   isSeletedTeam: boolean;
 }
 
-function WaitingPlayers({
-  room,
-  setRoom,
-  params,
-  setIsSeletedTeam,
-  isSeletedTeam,
-}: IProps) {
+function WaitingPlayers({ room, setRoom, params, setIsSeletedTeam, isSeletedTeam }: IProps) {
   const socket = useSocket();
   const { username } = useAuth();
 
@@ -38,9 +32,7 @@ function WaitingPlayers({
     <div className="flex flex-col items-center justify-center h-screen">
       {room.teams && (
         <>
-          <h1 className="text-4xl mb-10 font-bold">
-            Esperando os jogadores...
-          </h1>
+          <h1 className="text-4xl mb-10 font-bold">Esperando os jogadores...</h1>
           <div className="awaiting-players-box w-8/12 h-96 rounded flex ">
             <h2 className="absolute self-center grow left-1/2 -translate-x-1/2 text-white font-bold text-6xl">
               VS
@@ -52,7 +44,10 @@ function WaitingPlayers({
                 } justify-center content-cente self-center items-center`}
               >
                 {room.teams.red.players?.map((player) => (
-                  <div className="player-circle-group flex flex-col items-center">
+                  <div
+                    className="player-circle-group flex flex-col items-center"
+                    key={player.username}
+                  >
                     <div className="circle rounded-full w-12 h-12 bg-white"></div>
                     <div className="player-name">{player.username}</div>
                   </div>
@@ -66,7 +61,10 @@ function WaitingPlayers({
                 } justify-center content-cente self-center items-center`}
               >
                 {room.teams.blue.players?.map((player) => (
-                  <div className="player-circle-group flex flex-col items-center">
+                  <div
+                    className="player-circle-group flex flex-col items-center"
+                    key={player.username}
+                  >
                     <div className="circle rounded-full w-12 h-12 bg-white"></div>
                     <div className="player-name">{player.username}</div>
                   </div>

@@ -139,6 +139,7 @@ const Rooms = () => {
             <tbody>
               {Object.values(rooms).map((room: IRoomGame) => (
                 <tr
+                  key={room.id}
                   className="border-b border-white cursor-pointer"
                   onClick={() => router.push(`room/${room.id}`)}
                 >
